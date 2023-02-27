@@ -28,7 +28,10 @@ jobs:
           source venv/bin/activate
       
       - name: Install dependencies
-        run: python3 -m pip install -r requirements.txt
+        run: |
+          python3 -m pip3 install -U pip
+          python3 -m pip install –upgrade setuptools
+          python3 -m pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
