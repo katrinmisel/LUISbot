@@ -1,0 +1,18 @@
+{
+    "name": "luis_booking_bot",
+    "description": "",
+    "services": [
+        {
+            "type": "endpoint",
+            "name": "https://luisapp10.azurewebsites.net:8000/api/messages",
+            "id": "8ea34440-b68a-11ed-bcba-938774b5c9e0",
+            "appId": "9d9fad9e-518e-4533-947d-b1eef182c3fe",
+            "appPassword": "4TZ8Q~ORsqvoc4M5D.69QfcOy9iWtaRdI4iSWb9b",
+            "endpoint": "https://luisapp10.azurewebsites.net:8000/api/messages"
+        }
+    ],
+    "padlock": "",
+    "version": "2.0",
+    "path": "/media/katrin/C0D812DCD812D090/Ingenieur_IA/P10_bot_v2/luis_booking_bot",
+    "overrides": null
+}
