@@ -20,3 +20,4 @@ aiounittest
 opencensus-ext-azure
 emoji==1.7
 dateparser==1.1.1
+setuptools
