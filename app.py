@@ -93,7 +93,7 @@ def init_func(self):
 
 
 if __name__ == "__main__":
-    APP = init_func(main)
+    APP = init_func(None)
     try:
         # Oubliez pas de mettre PORT = 8000 dans votre config.py
         web.run_app(APP, host="0.0.0.0", port=CONFIG.PORT)
