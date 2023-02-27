@@ -1,16 +1,22 @@
-requests==2.23.0
-botbuilder-core
-botframework-connector
-botbuilder-schema
-botbuilder-dialogs
-botbuilder-ai
-botbuilder-applicationinsights
-botbuilder-integration-applicationinsights-aiohttp
-datatypes-date-time>=1.0.0.a1
-opencensus-ext-azure
+-e ./libraries/botbuilder-schema
+-e ./libraries/botframework-connector
+-e ./libraries/botframework-streaming
+-e ./libraries/botbuilder-core
+-e ./libraries/botbuilder-ai
+-e ./libraries/botbuilder-applicationinsights
+-e ./libraries/botbuilder-dialogs
+-e ./libraries/botbuilder-azure
+-e ./libraries/botbuilder-integration-applicationinsights-aiohttp
+-e ./libraries/botbuilder-adapters-slack
+-e ./libraries/botbuilder-integration-aiohttp
+-e ./libraries/botbuilder-testing
+
 azure-cognitiveservices-language-luis==0.2.0
 datatypes-date-time>=1.0.0.a1
 msrest==0.6.19
 aiohttp==3.6.2
 unittest2
 aiounittest
+opencensus-ext-azure
+emoji==1.7
+dateparser==1.1.1
