@@ -52,7 +52,6 @@ class MainDialog(ComponentDialog):
         self.initial_dialog_id = "WFDialog"
 
     async def intro_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
-
         if not self._luis_recognizer.is_configured:
             await step_context.context.send_activity(
                 MessageFactory.text(

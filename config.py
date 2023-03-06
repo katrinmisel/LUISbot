@@ -5,19 +5,16 @@
 
 import os
 
-
 class DefaultConfig:
     """Configuration for the bot."""
 
     PORT = 8000
-    #APP_ID = ""
-    #APP_PASSWORD = ""
-    APP_ID = os.environ.get("MicrosoftAppId", "792b65c2-8a6d-4332-adbb-683221ab6e93")
-    APP_PASSWORD = os.environ.get("MicrosoftAppPassword", "a3W8Q~UeA7Kflkmy7lLtIYcg.qQaa4ARW676PapT")
-    LUIS_APP_ID = os.environ.get("LuisAppId", "9a2e59b9-686d-492b-959b-8ceff62b8494")
-    LUIS_API_KEY = os.environ.get("LuisAPIKey", "31031bdf48c943c5a836b722abe99440")
+    APP_ID = os.environ.get("MicrosoftAppId", "8395514b-224f-435e-944d-134b00913f0d")
+    APP_PASSWORD = os.environ.get("MicrosoftAppPassword", "hFW8Q~kzQnV1EPtOxi4km_MaRO7wTybDohsiwaO5")
+    LUIS_APP_ID = os.environ.get("LuisAppId", "db70b5ef-3103-46a0-aa92-7cbfd39c1439")
+    LUIS_API_KEY = os.environ.get("LuisAPIKey", "86630a0d4ffa4c56a2a80714dce8714c")
     # LUIS endpoint host name, ie "westus.api.cognitive.microsoft.com"
-    LUIS_API_HOST_NAME = os.environ.get("LuisAPIHostName", "https://flymeresource.cognitiveservices.azure.com/")
+    LUIS_API_HOST_NAME = os.environ.get("LuisAPIHostName", "https://luisp10.cognitiveservices.azure.com/")
     APPINSIGHTS_INSTRUMENTATION_KEY = os.environ.get(
-        "AppInsightsInstrumentationKey", ""
+        "AppInsightsInstrumentationKey", "61449954-e098-49e5-b651-4d70250e38d8"
     )

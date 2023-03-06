@@ -10,12 +10,6 @@ from botbuilder.core import MessageFactory, BotTelemetryClient, NullTelemetryCli
 from .cancel_and_help_dialog import CancelAndHelpDialog
 from .date_resolver_dialog import DateResolverDialog
 
-from config import DefaultConfig
-#import logging
-#from opencensus.ext.azure.log_exporter import AzureLogHandler
-
-CONFIG = DefaultConfig()
-INSTRUMENTATION_KEY = CONFIG.APPINSIGHTS_INSTRUMENTATION_KEY
 
 class BookingDialog(CancelAndHelpDialog):
     """Flight booking implementation."""
@@ -29,7 +23,6 @@ class BookingDialog(CancelAndHelpDialog):
             dialog_id or BookingDialog.__name__, telemetry_client
         )
         self.telemetry_client = telemetry_client
-
         text_prompt = TextPrompt(TextPrompt.__name__)
         text_prompt.telemetry_client = telemetry_client
 
@@ -50,12 +43,14 @@ class BookingDialog(CancelAndHelpDialog):
         self.add_dialog(text_prompt)
         self.add_dialog(ConfirmPrompt(ConfirmPrompt.__name__))
         self.add_dialog(
-            DateResolverDialog(DateResolverDialog.__name__, self.telemetry_client)
+            DateResolverDialog(DateResolverDialog.START_DATE_DIALOG_ID)
+        )
+        self.add_dialog(
+            DateResolverDialog(DateResolverDialog.END_DATE_DIALOG_ID)
         )
         self.add_dialog(waterfall_dialog)
 
         self.initial_dialog_id = WaterfallDialog.__name__
-
 
     async def origin_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         """Prompt for origin city."""
@@ -71,12 +66,13 @@ class BookingDialog(CancelAndHelpDialog):
 
         return await step_context.next(booking_details.or_city)
 
-
     async def destination_step(
         self, step_context: WaterfallStepContext
     ) -> DialogTurnResult:
         """Prompt for destination."""
         booking_details = step_context.options
+
+        # Capture the results of the previous step
         booking_details.or_city = step_context.result
 
         if booking_details.dst_city is None:
@@ -89,7 +85,7 @@ class BookingDialog(CancelAndHelpDialog):
 
         return await step_context.next(booking_details.dst_city)
 
-
+    
 
     async def start_date_step(
         self, step_context: WaterfallStepContext
@@ -106,12 +102,11 @@ class BookingDialog(CancelAndHelpDialog):
             booking_details.str_date
         ):
             return await step_context.begin_dialog(
-                DateResolverDialog.__name__, booking_details.str_date
+                DateResolverDialog.START_DATE_DIALOG_ID, booking_details.str_date
             )  # pylint: disable=line-too-long
 
         return await step_context.next(booking_details.str_date)
     
-
     async def end_date_step(
         self, step_context: WaterfallStepContext
     ) -> DialogTurnResult:
@@ -127,30 +122,27 @@ class BookingDialog(CancelAndHelpDialog):
             booking_details.end_date
         ):
             return await step_context.begin_dialog(
-                DateResolverDialog.__name__, booking_details.end_date
+                DateResolverDialog.END_DATE_DIALOG_ID, booking_details.end_date
             )  # pylint: disable=line-too-long
 
         return await step_context.next(booking_details.end_date)
-    
-
 
     async def budget_step(self, step_context: WaterfallStepContext) -> DialogTurnResult:
         """Prompt for budget."""
         booking_details = step_context.options
 
-        # Capture the results of the previous step
+        # Capture the response to the previous step's prompt
         booking_details.end_date = step_context.result
 
         if booking_details.budget is None:
             return await step_context.prompt(
                 TextPrompt.__name__,
                 PromptOptions(
-                    prompt=MessageFactory.text("What is your budget for this trip?")
+                    prompt=MessageFactory.text("What is your budget for traveling?")
                 ),
-            )
-        
-        return await step_context.next(booking_details.budget)
+            )  # pylint: disable=line-too-long,bad-continuation
 
+        return await step_context.next(booking_details.budget)
 
     async def confirm_step(
         self, step_context: WaterfallStepContext
@@ -160,10 +152,11 @@ class BookingDialog(CancelAndHelpDialog):
 
         # Capture the results of the previous step
         booking_details.budget = step_context.result
+
         msg = (
-            f"Please confirm, I have you traveling from: { booking_details.or_city } to { booking_details.dst_city }"
-            f" departure: { booking_details.str_date } return : { booking_details.end_date }"
-            f" for the amount of: { booking_details.budget }."
+            f"Please confirm, I have you traveling from { booking_details.or_city } to { booking_details.dst_city }"
+            f" departing on { booking_details.str_date } and returning on { booking_details.end_date}"
+            f" , trip price: { booking_details.budget }."
         )
 
         # Offer a YES/NO prompt.
@@ -178,8 +171,8 @@ class BookingDialog(CancelAndHelpDialog):
 
         if step_context.result:
 
-            booking_details = step_context.options
-            #booking_details.budget = step_context.result
+            #self.logger.setLevel(logging.INFO)
+            #self.logger.info('Travel booking confirmed.')
 
             return await step_context.end_dialog(booking_details)
 
