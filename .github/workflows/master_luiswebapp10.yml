@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python app to Azure Web App - luisapp10
+name: Build and deploy Python app to Azure Web App - LUISWebApp10
 
 on:
   push:
@@ -24,14 +24,11 @@ jobs:
 
       - name: Create and start virtual environment
         run: |
-          python3 -m venv venv
+          python -m venv venv
           source venv/bin/activate
       
       - name: Install dependencies
-        run: |
-          python3 -m pip install pip --upgrade
-          python3 -m pip install setuptools --upgrade
-          python3 -m pip install -r requirements.txt
+        run: pip install -r requirements.txt
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
@@ -61,6 +58,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
-          app-name: 'luisapp10'
+          app-name: 'LUISWebApp10'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4C4B15414BD34857B45BC838042183E2 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_156A1420F1584998AA5B43BA81699885 }}
