@@ -10,6 +10,13 @@ from botbuilder.core import MessageFactory, BotTelemetryClient, NullTelemetryCli
 from .cancel_and_help_dialog import CancelAndHelpDialog
 from .date_resolver_dialog import DateResolverDialog
 
+from config import DefaultConfig
+CONFIG = DefaultConfig()
+INSTRUMENTATION_KEY = CONFIG.APPINSIGHTS_INSTRUMENTATION_KEY
+
+import logging
+from opencensus.ext.azure.log_exporter import AzureLogHandler
+
 
 class BookingDialog(CancelAndHelpDialog):
     """Flight booking implementation."""
@@ -23,7 +30,13 @@ class BookingDialog(CancelAndHelpDialog):
             dialog_id or BookingDialog.__name__, telemetry_client
         )
         self.telemetry_client = telemetry_client
+
+        self.logger = logging.getLogger(__name__)
+
+        self.logger.addHandler(AzureLogHandler(connection_string = INSTRUMENTATION_KEY))
+
         text_prompt = TextPrompt(TextPrompt.__name__)
+        
         text_prompt.telemetry_client = telemetry_client
 
         waterfall_dialog = WaterfallDialog(
@@ -60,7 +73,7 @@ class BookingDialog(CancelAndHelpDialog):
             return await step_context.prompt(
                 TextPrompt.__name__,
                 PromptOptions(
-                    prompt=MessageFactory.text("From what city will you be travelling?")
+                    prompt=MessageFactory.text("Where are you travelling from?")
                 ),
             )  # pylint: disable=line-too-long,bad-continuation
 
@@ -79,7 +92,7 @@ class BookingDialog(CancelAndHelpDialog):
             return await step_context.prompt(
                 TextPrompt.__name__,
                 PromptOptions(
-                    prompt=MessageFactory.text("To what city would you like to travel?")
+                    prompt=MessageFactory.text("Where are you travelling to?")
                 ),
             )  # pylint: disable=line-too-long,bad-continuation
 
@@ -138,7 +151,7 @@ class BookingDialog(CancelAndHelpDialog):
             return await step_context.prompt(
                 TextPrompt.__name__,
                 PromptOptions(
-                    prompt=MessageFactory.text("What is your budget for traveling?")
+                    prompt=MessageFactory.text("What is your budget for this trip?")
                 ),
             )  # pylint: disable=line-too-long,bad-continuation
 
@@ -154,9 +167,9 @@ class BookingDialog(CancelAndHelpDialog):
         booking_details.budget = step_context.result
 
         msg = (
-            f"Please confirm, I have you traveling from { booking_details.or_city } to { booking_details.dst_city }"
+            f"Please confirm: You are travelling from { booking_details.or_city } to { booking_details.dst_city }"
             f" departing on { booking_details.str_date } and returning on { booking_details.end_date}"
-            f" , trip price: { booking_details.budget }."
+            f" , total trip budget: { booking_details.budget }."
         )
 
         # Offer a YES/NO prompt.
@@ -173,14 +186,15 @@ class BookingDialog(CancelAndHelpDialog):
 
             # send insights event that booking was confirmed by user
 
-            booking_props = step_context.options.__dict__
-            self.telemetry_client.track_event(
-                "BookingConfirmed",
-                properties = booking_props
-            )
-            self.telemetry_client.flush()
+            self.logger.setLevel(logging.INFO)
+            self.logger.info("Booking confirmed by user")
 
             return await step_context.end_dialog(booking_details)
+        
+        properties = {'custom_dimensions': booking_details.__dict__}
+
+        self.logger.setLevel(logging.ERROR)
+        self.logger.error("Customer refused booking info", extra=properties)
 
         return await step_context.end_dialog()
 
