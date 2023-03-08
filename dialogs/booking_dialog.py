@@ -171,8 +171,14 @@ class BookingDialog(CancelAndHelpDialog):
 
         if step_context.result:
 
-            #self.logger.setLevel(logging.INFO)
-            #self.logger.info('Travel booking confirmed.')
+            # send insights event that booking was confirmed by user
+
+            booking_props = step_context.options.__dict__
+            self.telemetry_client.track_event(
+                "BookingConfirmed",
+                properties = booking_props
+            )
+            self.telemetry_client.flush()
 
             return await step_context.end_dialog(booking_details)
 
