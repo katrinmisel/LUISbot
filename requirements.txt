@@ -42,3 +42,5 @@ recognizers-text-number==1.0.2a2
 recognizers-text-number-with-unit==1.0.2a2
 regex==2019.8.19
 requests==2.23.0
+opencensus
+opencensus-ext-azure
