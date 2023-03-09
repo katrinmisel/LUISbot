@@ -193,10 +193,12 @@ class BookingDialog(CancelAndHelpDialog):
             # send insights event BookingConfirmed
 
             self.telemetry_client.track_event("BookingConfirmed", properties=booking_details.__dict__)
+            self.telemetry_client.flush()
 
             return await step_context.end_dialog(booking_details)
         
         self.telemetry_client.track_event("BookingRefused", properties=booking_details.__dict__)
+        self.telemetry_client.flush()
 
         return await step_context.end_dialog()
 
