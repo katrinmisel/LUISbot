@@ -7,6 +7,7 @@ from datatypes_date_time.timex import Timex
 from botbuilder.dialogs import WaterfallDialog, WaterfallStepContext, DialogTurnResult
 from botbuilder.dialogs.prompts import ConfirmPrompt, TextPrompt, PromptOptions
 from botbuilder.core import MessageFactory, BotTelemetryClient, NullTelemetryClient
+from botbuilder.core.bot_telemetry_client import Severity
 from .cancel_and_help_dialog import CancelAndHelpDialog
 from .date_resolver_dialog import DateResolverDialog
 
@@ -186,17 +187,16 @@ class BookingDialog(CancelAndHelpDialog):
 
             # send insights event that booking was confirmed by user
 
-            self.logger.setLevel(logging.INFO)
-            self.logger.info("Booking confirmed by user")
+            #self.logger.setLevel(logging.INFO)
+            #self.logger.info("Booking confirmed by user")
 
             # send insights event BookingConfirmed
 
+            self.telemetry_client.track_trace("Booking confirmed by user", properties=booking_details.__dict__)
+
             return await step_context.end_dialog(booking_details)
         
-        properties = {'custom_dimensions': booking_details.__dict__}
-
-        self.logger.setLevel(logging.ERROR)
-        self.logger.error("Customer refused booking info", extra=properties)
+        self.telemetry_client.track_trace("Booking refused by user", severity=Severity.warning, properties=booking_details.__dict__)
 
         return await step_context.end_dialog()
 
