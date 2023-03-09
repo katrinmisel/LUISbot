@@ -189,6 +189,8 @@ class BookingDialog(CancelAndHelpDialog):
             self.logger.setLevel(logging.INFO)
             self.logger.info("Booking confirmed by user")
 
+            # send insights event BookingConfirmed
+
             return await step_context.end_dialog(booking_details)
         
         properties = {'custom_dimensions': booking_details.__dict__}
