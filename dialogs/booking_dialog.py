@@ -12,7 +12,7 @@ from .date_resolver_dialog import DateResolverDialog
 
 from config import DefaultConfig
 CONFIG = DefaultConfig()
-APPINSIGHTS_INSTRUMENTATION_KEY = CONFIG.APPINSIGHTS_INSTRUMENTATION_KEY
+APPINSIGHTS_CONNECTION_STRING = CONFIG.APPINSIGHTS_CONNECTION_STRING
 
 import logging
 from opencensus.ext.azure.log_exporter import AzureLogHandler
@@ -33,7 +33,7 @@ class BookingDialog(CancelAndHelpDialog):
 
         self.logger = logging.getLogger(__name__)
 
-        self.logger.addHandler(AzureLogHandler(connection_string = APPINSIGHTS_INSTRUMENTATION_KEY))
+        self.logger.addHandler(AzureLogHandler(connection_string = APPINSIGHTS_CONNECTION_STRING))
 
         text_prompt = TextPrompt(TextPrompt.__name__)
         
