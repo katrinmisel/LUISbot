@@ -23,6 +23,7 @@ from .booking_dialog import BookingDialog
 
 
 class MainDialog(ComponentDialog):
+    
     def __init__(
         self,
         luis_recognizer: FlightBookingRecognizer,
@@ -66,7 +67,7 @@ class MainDialog(ComponentDialog):
         
         message_text = (
             str(step_context.options)
-            if step_context.options
+            if hasattr(step_context, "options") and step_context.options is not None
             else "Hello, I'm the Flight Booking bot. I can help you book a flight. What would you like to do?"
         )
         
