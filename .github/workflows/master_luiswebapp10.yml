@@ -38,8 +38,7 @@ jobs:
           LUIS_API_HOST_NAME: ${{ secrets.LUIS_API_HOST_NAME }}
           LUIS_API_KEY: ${{ secrets.LUIS_API_KEY }}
           LUIS_APP_ID: ${{ secrets.LUIS_APP_ID }}
-        run: |
-          python3 -m unittest bot_test.py
+        run: pytest
   
       
       - name: Upload artifact for deployment jobs
